@@ -48,7 +48,13 @@ function isAuthenticated(req) {
 }
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+  if (path.basename(req.path).startsWith('.')) return res.status(404).end();
+  next();
+});
+
+app.use(express.static(path.join(__dirname, 'public'), { dotfiles: 'deny' }));
 
 function getLocalIP() {
   const nets = os.networkInterfaces();
@@ -128,10 +134,12 @@ app.post('/api/register', (req, res) => {
 });
 
 app.get('/api/registrations', (req, res) => {
+  if (!isAuthenticated(req)) return res.status(401).json({ error: 'Niet ingelogd' });
   res.json(readData());
 });
 
 app.delete('/api/registrations/:id', (req, res) => {
+  if (!isAuthenticated(req)) return res.status(401).json({ error: 'Niet ingelogd' });
   try {
     const regs = readData();
     const filtered = regs.filter(r => r.id !== req.params.id);
