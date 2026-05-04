@@ -1,0 +1,3 @@
+/admin een easteregg maken, en de echte admin pagina verstoppen en password protected (idk hoe we password protected gaan doen op een local hosted iets zonder credentials te exposen misschien met .env?)
+aanmeldingen op de homepage beginnen op 15 ipv 0 en daarna doortellen
+sonja.jpg ipv <div class="avatar" id="avatar-initials">SP</div>

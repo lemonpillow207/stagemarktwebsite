@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beheer – Korton Stagemarkt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF6B00;
+      --dark:   #0D0D0D;
+      --dark2:  #1A1A1A;
+      --white:  #FFFFFF;
+      --border: #EBEBEB;
+      --text:   #1A1A1A;
+      --muted:  #888888;
+      --bg:     #F5F5F5;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: var(--dark);
+      padding: 0;
+      position: sticky; top: 0; z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .header-left {
+      display: flex; align-items: center; gap: 1.1rem;
+    }
+
+    .header img { height: 34px; }
+
+    .h-divider {
+      width: 1px; height: 30px;
+      background: rgba(255,255,255,0.13);
+    }
+
+    .h-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.95rem;
+      color: white;
+    }
+
+    .h-sub {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 0.1rem;
+    }
+
+    .header-actions {
+      display: flex; gap: 0.7rem;
+    }
+
+    .btn {
+      height: 36px; padding: 0 1rem;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; border: none;
+      display: flex; align-items: center; gap: 0.4rem;
+      transition: opacity 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-orange { background: var(--orange); color: white; }
+    .btn-orange:hover { background: #e05a00; }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.75);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.13); }
+
+    .btn-red {
+      background: rgba(239,68,68,0.15);
+      color: #f87171;
+    }
+    .btn-red:hover { background: rgba(239,68,68,0.25); }
+
+    .page-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      padding: 1.5rem 2rem 0;
+    }
+
+    .stat {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--orange);
+    }
+
+    .stat-label {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.5rem;
+    }
+
+    .stat-val {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 2rem;
+      color: var(--dark); line-height: 1;
+    }
+
+    .stat-val.small { font-size: 0.95rem; padding-top: 0.3rem; }
+
+    .section { padding: 1.4rem 2rem 3rem; }
+
+    .section-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.95rem;
+      color: var(--dark);
+    }
+
+    .table-wrap {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 18px rgba(0,0,0,0.06);
+    }
+
+    .table-scroll { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+
+    thead { background: var(--dark2); }
+
+    thead th {
+      padding: 0.85rem 1.2rem;
+      text-align: left;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+
+    tbody td { padding: 0.9rem 1.2rem; font-size: 0.88rem; color: var(--text); }
+
+    .num-cell { color: var(--muted); font-size: 0.78rem; }
+
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 0.22rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600;
+      background: rgba(255,107,0,0.1);
+      color: var(--orange);
+    }
+
+    .ts { font-size: 0.78rem; color: var(--muted); }
+
+    .btn-delete {
+      height: 28px; width: 28px; padding: 0;
+      border-radius: 7px; border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.15);
+      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-delete:hover { background: rgba(239,68,68,0.15); color: #f87171; }
+
+    .placeholder { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+    .placeholder-icon { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.5; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+<div class="header-inner">
+  <div class="header-left">
+    <img src="/korton-logo-wit.png" alt="Korton">
+    <div class="h-divider"></div>
+    <div>
+      <div class="h-title">Beheer – Aanmeldingen</div>
+      <div class="h-sub">Korton Stagemarkt</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="loadData()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="23 4 23 10 17 10"/>
+        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+      </svg>
+      Vernieuwen
+    </button>
+    <button class="btn btn-orange" onclick="exportCSV()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Exporteer CSV
+    </button>
+    <button class="btn btn-red" onclick="logout()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Uitloggen
+    </button>
+  </div>
+</div>
+</header>
+
+<div class="page-wrap">
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">Totaal aanmeldingen</div>
+    <div class="stat-val" id="stat-total">–</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Aanmeldingen vandaag</div>
+    <div class="stat-val" id="stat-today">–</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Laatste aanmelding</div>
+    <div class="stat-val small" id="stat-last">–</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-bar">
+    <div class="section-title">Alle aanmeldingen</div>
+    <small style="color:var(--muted); font-size:0.75rem;" id="refresh-label"></small>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Naam</th>
+            <th>E-mail</th>
+            <th>Mobiel</th>
+            <th>Opleiding</th>
+            <th>Leerjaar</th>
+            <th>Tijdstip</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr>
+            <td colspan="7">
+              <div class="placeholder">
+                <div class="placeholder-icon">⏳</div>
+                Laden…
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  let allData = [];
+
+  async function loadData() {
+    document.getElementById('refresh-label').textContent = 'Vernieuwen…';
+    try {
+      const res = await fetch('/api/registrations');
+      allData = await res.json();
+      render(allData);
+      updateStats(allData);
+      document.getElementById('refresh-label').textContent =
+        'Bijgewerkt om ' + new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      document.getElementById('tbody').innerHTML =
+        '<tr><td colspan="7"><div class="placeholder">Fout bij laden van gegevens.</div></td></tr>';
+      document.getElementById('refresh-label').textContent = 'Fout bij vernieuwen';
+    }
+  }
+
+  function render(data) {
+    const tbody = document.getElementById('tbody');
+    if (!data.length) {
+      tbody.innerHTML =
+        '<tr><td colspan="7"><div class="placeholder"><div class="placeholder-icon">📋</div>Nog geen aanmeldingen</div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = [...data].reverse().map((r, i) => `
+      <tr id="row-${r.id}">
+        <td class="num-cell">${data.length - i}</td>
+        <td><strong>${x(r.naam)}</strong></td>
+        <td>${x(r.email)}</td>
+        <td>${x(r.mobiel)}</td>
+        <td>${x(r.opleiding)}</td>
+        <td><span class="badge">Jaar ${x(r.leerjaar)}</span></td>
+        <td class="ts">${fmt(r.timestamp)}</td>
+        <td><button class="btn-delete" title="Verwijderen" onclick="deleteEntry('${r.id}', '${x(r.naam)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+          </svg>
+        </button></td>
+      </tr>`).join('');
+  }
+
+  function updateStats(data) {
+    document.getElementById('stat-total').textContent = data.length;
+    const today = new Date().toDateString();
+    const todayN = data.filter(r => new Date(r.timestamp).toDateString() === today).length;
+    document.getElementById('stat-today').textContent = todayN;
+    if (data.length)
+      document.getElementById('stat-last').textContent = fmt(data[data.length - 1].timestamp);
+  }
+
+  function fmt(iso) {
+    return new Date(iso).toLocaleString('nl-NL', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function x(s) {
+    return String(s ?? '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function exportCSV() {
+    if (!allData.length) { alert('Nog geen aanmeldingen om te exporteren.'); return; }
+    const headers = ['Naam','E-mail','Mobiel','Opleiding','Leerjaar','Tijdstip'];
+    const rows = allData.map(r =>
+      [r.naam, r.email, r.mobiel, r.opleiding, r.leerjaar, r.timestamp]
+        .map(v => `"${String(v ?? '').replace(/"/g, '""')}"`)
+        .join(',')
+    );
+    const csv = '﻿' + [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `aanmeldingen_korton_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function deleteEntry(id, naam) {
+    if (!confirm(`${naam} verwijderen?`)) return;
+    try {
+      const res = await fetch(`/api/registrations/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        const row = document.getElementById(`row-${id}`);
+        row.style.transition = 'opacity 0.2s, transform 0.2s';
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(12px)';
+        setTimeout(() => loadData(), 220);
+      }
+    } catch { alert('Verwijderen mislukt.'); }
+  }
+
+  async function logout() {
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/login.html';
+  }
+
+  loadData();
+  setInterval(loadData, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#FF6B00">
+  <title>Registreer je interesse – Korton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:      #FF6B00;
+      --orange-dark: #E05A00;
+      --orange-soft: rgba(255,107,0,0.1);
+      --dark:        #1A1A1A;
+      --muted:       #888888;
+      --border:      #E5E5E5;
+      --white:       #FFFFFF;
+      --bg:          #F6F6F6;
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100dvh;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--orange);
+      padding: 1.2rem 1.4rem 1.5rem;
+      position: sticky; top: 0; z-index: 10;
+    }
+
+    .header-row {
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+
+    .header img { height: 30px; width: auto; }
+
+    .divider {
+      width: 1px; height: 26px;
+      background: rgba(255,255,255,0.3);
+      flex-shrink: 0;
+    }
+
+    .header-text .title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1rem;
+      color: white; line-height: 1.1;
+    }
+
+    .header-text .sub {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.65);
+      margin-top: 0.1rem;
+    }
+
+    /* CARD */
+    .card {
+      margin: 1.4rem 1rem 2.5rem;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 1.8rem 1.4rem;
+      box-shadow: 0 4px 28px rgba(0,0,0,0.07);
+    }
+
+    /* FORM VIEW */
+    .form-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.4rem;
+      color: var(--dark); margin-bottom: 0.35rem;
+    }
+
+    .form-sub {
+      font-size: 0.88rem;
+      color: var(--muted); line-height: 1.55;
+      margin-bottom: 1.8rem;
+    }
+
+    .field { margin-bottom: 1.15rem; }
+
+    .field label {
+      display: block;
+      font-size: 0.76rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.42rem;
+    }
+
+    .field input,
+    .field select {
+      width: 100%; height: 52px;
+      padding: 0 1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s;
+      -webkit-appearance: none; appearance: none;
+      touch-action: manipulation;
+    }
+
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.8rem;
+      cursor: pointer;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(255,107,0,0.12);
+    }
+
+    /* required star */
+    .req { color: var(--orange); margin-left: 1px; }
+
+    /* SUBMIT */
+    .btn-submit {
+      width: 100%; height: 56px;
+      background: var(--orange);
+      color: white; border: none;
+      border-radius: 14px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1.05rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      margin-top: 0.6rem;
+      transition: background 0.15s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.5rem;
+      touch-action: manipulation;
+    }
+
+    .btn-submit:hover   { background: var(--orange-dark); }
+    .btn-submit:active  { transform: scale(0.98); }
+    .btn-submit:disabled {
+      background: #ccc; cursor: not-allowed; transform: none;
+    }
+
+    .btn-spinner {
+      display: none;
+      width: 20px; height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .btn-submit.loading .btn-label { display: none; }
+    .btn-submit.loading .btn-spinner { display: block; }
+
+    .error-box {
+      margin-top: 0.9rem;
+      padding: 0.8rem 1rem;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      font-size: 0.86rem; color: #dc2626;
+      display: none;
+    }
+
+    /* SUCCESS VIEW */
+    .success-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2rem 1.2rem 2.5rem;
+    }
+
+    .check-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%; background: var(--orange);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.4rem;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .check-circle svg {
+      stroke-dasharray: 42;
+      stroke-dashoffset: 42;
+      animation: drawCheck 0.45s ease forwards 0.3s;
+    }
+
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.5rem;
+      color: var(--dark); margin-bottom: 0.5rem;
+    }
+
+    .success-body {
+      font-size: 0.92rem;
+      color: var(--muted); line-height: 1.6;
+      max-width: 280px;
+    }
+
+    .success-divider {
+      width: 100%; height: 1px;
+      background: var(--border);
+      margin: 1.8rem 0;
+    }
+
+    .success-logo { height: 26px; opacity: 0.4; }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 0.8rem 1rem 1.5rem;
+      font-size: 0.76rem; color: var(--muted);
+    }
+
+    .content-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ANIMATIONS */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.45); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-row">
+    <img src="/korton-logo-wit.png" alt="Korton">
+    <div class="divider"></div>
+    <div class="header-text">
+      <div class="title">Stagemarkt</div>
+      <div class="sub">Registreer je interesse</div>
+    </div>
+  </div>
+</header>
+
+<div class="content-wrap">
+<div class="card">
+
+  <!-- FORM VIEW -->
+  <div id="form-view">
+    <div class="form-title">Hoi! 👋</div>
+    <p class="form-sub">Laat je gegevens achter en we nemen contact op over de mogelijkheden bij Korton.</p>
+
+    <form id="reg-form" novalidate>
+
+      <div class="field">
+        <label for="naam">Naam <span class="req">*</span></label>
+        <input type="text" id="naam" name="naam"
+               placeholder="Voor- en achternaam"
+               autocomplete="name" inputmode="text">
+      </div>
+
+      <div class="field">
+        <label for="email">E-mailadres <span class="req">*</span></label>
+        <input type="email" id="email" name="email"
+               placeholder="naam@school.nl"
+               autocomplete="email" inputmode="email">
+      </div>
+
+      <div class="field">
+        <label for="mobiel">Mobiel nummer <span class="req">*</span></label>
+        <input type="tel" id="mobiel" name="mobiel"
+               placeholder="06-XXXXXXXX"
+               autocomplete="tel" inputmode="tel">
+      </div>
+
+      <div class="field">
+        <label for="opleiding">Opleiding <span class="req">*</span></label>
+        <input type="text" id="opleiding" name="opleiding"
+               placeholder="bijv. Informatica"
+               inputmode="text">
+      </div>
+
+      <div class="field">
+        <label for="leerjaar">Leerjaar <span class="req">*</span></label>
+        <select id="leerjaar" name="leerjaar">
+          <option value="">Kies je leerjaar</option>
+          <option value="1">1e jaar</option>
+          <option value="2">2e jaar</option>
+          <option value="3">3e jaar</option>
+          <option value="4">4e jaar</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submit-btn">
+        <span class="btn-label">Registreer mij!</span>
+        <div class="btn-spinner"></div>
+      </button>
+
+      <div class="error-box" id="error-box"></div>
+    </form>
+  </div>
+
+  <!-- SUCCESS VIEW -->
+  <div class="success-view" id="success-view">
+    <div class="check-circle">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+           stroke="white" stroke-width="3"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="success-title">Geregistreerd!</div>
+    <p class="success-body">
+      Bedankt voor je interesse. We nemen binnenkort contact met je op over de mogelijkheden bij Korton.
+    </p>
+    <div class="success-divider"></div>
+    <img src="/korton-logo.png" alt="Korton" class="success-logo">
+  </div>
+
+</div>
+
+<div class="footer">Korton &copy; <span id="yr"></span> &nbsp;·&nbsp; Stagemarkt</div>
+</div>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const form   = document.getElementById('reg-form');
+  const btn    = document.getElementById('submit-btn');
+  const errBox = document.getElementById('error-box');
+
+  function showError(msg) {
+    errBox.textContent = msg;
+    errBox.style.display = 'block';
+  }
+
+  function clearError() {
+    errBox.style.display = 'none';
+  }
+
+  function validate({ naam, email, mobiel, opleiding, leerjaar }) {
+    if (!naam.trim())    return 'Vul je naam in.';
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return 'Vul een geldig e-mailadres in.';
+    if (!mobiel.trim()) return 'Vul je mobiele nummer in.';
+    if (!opleiding.trim()) return 'Vul je opleiding in.';
+    if (!leerjaar)      return 'Selecteer je leerjaar.';
+    return null;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+
+    const data = {
+      naam:      document.getElementById('naam').value,
+      email:     document.getElementById('email').value,
+      mobiel:    document.getElementById('mobiel').value,
+      opleiding: document.getElementById('opleiding').value,
+      leerjaar:  document.getElementById('leerjaar').value,
+    };
+
+    const err = validate(data);
+    if (err) return showError(err);
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.error || 'Er is iets misgegaan.');
+      }
+      document.getElementById('form-view').style.display = 'none';
+      const sv = document.getElementById('success-view');
+      sv.style.display = 'flex';
+    } catch (ex) {
+      showError(ex.message);
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  });
+
+  document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', clearError);
+  });
+</script>
+</body>
+</html>

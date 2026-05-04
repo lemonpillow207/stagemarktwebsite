@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080808;
+      color: #FF6B00;
+      font-family: 'DM Mono', monospace;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    .wrap {
+      max-width: 520px;
+      width: 100%;
+    }
+
+    /* Faded logo */
+    .logo {
+      height: 28px;
+      opacity: 0.12;
+      margin-bottom: 3.5rem;
+      display: block;
+    }
+
+    /* Big headline */
+    .denied {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      line-height: 0.9;
+      color: #FF6B00;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeIn 0.4s ease forwards 0.2s;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Terminal lines */
+    .terminal {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 3rem;
+    }
+
+    .line {
+      font-size: 0.82rem;
+      color: rgba(255,107,0,0.55);
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+
+    .line.dim   { color: rgba(255,255,255,0.15); }
+    .line.error { color: rgba(255,80,80,0.7); }
+    .line.gap   { height: 0.6rem; }
+
+    .line:nth-child(1)  { animation: slideIn 0.3s ease forwards 0.5s; }
+    .line:nth-child(2)  { animation: slideIn 0.3s ease forwards 0.8s; }
+    .line:nth-child(3)  { animation: slideIn 0.3s ease forwards 1.1s; }
+    .line:nth-child(4)  { animation: slideIn 0.3s ease forwards 1.4s; }
+    .line:nth-child(5)  { animation: slideIn 0.3s ease forwards 1.7s; }
+    .line:nth-child(6)  { animation: slideIn 0.3s ease forwards 2.0s; }
+    .line:nth-child(7)  { animation: slideIn 0.3s ease forwards 2.3s; }
+    .line:nth-child(8)  { animation: slideIn 0.3s ease forwards 2.6s; }
+
+    /* Blinking cursor on last line */
+    .cursor {
+      display: inline-block;
+      width: 7px; height: 0.9em;
+      background: rgba(255,107,0,0.5);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1.1s step-end infinite;
+    }
+
+    /* Subtle scanline overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.04) 2px,
+        rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* The hidden Easter egg link */
+    .secret {
+      display: block;
+      margin-top: 4rem;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.04);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.3s;
+      cursor: default;
+    }
+
+    .secret:hover {
+      color: rgba(255,107,0,0.35);
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <img src="/korton-logo.png" alt="" class="logo">
+
+  <div class="denied">TOEGANG<br>GEWEIGERD.</div>
+
+  <div class="terminal">
+    <div class="line dim">$ GET /admin HTTP/1.1</div>
+    <div class="line dim">Host: localhost:3000</div>
+    <div class="line gap"></div>
+    <div class="line">→ Gebruiker gedetecteerd</div>
+    <div class="line">→ Toegangsniveau: <span style="color:rgba(255,255,255,0.4)">BEZOEKER</span></div>
+    <div class="line">→ Vereist niveau: <span style="color:#FF6B00">KORTON_STAFF</span></div>
+    <div class="line gap"></div>
+    <div class="line error">✕ Niet de juiste persoon.<span class="cursor"></span></div>
+  </div>
+
+  <a href="/login.html" class="secret">→ /beheer</a>
+</div>
+</body>
+</html>
