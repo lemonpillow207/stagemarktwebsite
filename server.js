@@ -156,6 +156,14 @@ app.get('/api/count', (req, res) => {
   res.json({ count: readData().length });
 });
 
+app.post('/api/draw', (req, res) => {
+  if (!isAuthenticated(req)) return res.status(401).json({ error: 'Niet ingelogd' });
+  const regs = readData();
+  if (!regs.length) return res.status(400).json({ error: 'Geen aanmeldingen om uit te loten' });
+  const winner = regs[Math.floor(Math.random() * regs.length)];
+  res.json({ winner });
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   const ip = getLocalIP();
   console.log('\n╔═══════════════════════════════════════════╗');

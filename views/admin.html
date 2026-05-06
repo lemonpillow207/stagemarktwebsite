@@ -97,6 +97,100 @@
     }
     .btn-red:hover { background: rgba(239,68,68,0.25); }
 
+    .btn-prize {
+      background: linear-gradient(135deg, #FF6B00, #ff9500);
+      color: white;
+      font-weight: 700;
+    }
+    .btn-prize:hover { opacity: 0.88; }
+
+    /* DRAW MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      max-width: 420px; width: 90%;
+      text-align: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+      animation: modalPop 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.8); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .modal-icon { font-size: 3rem; margin-bottom: 0.8rem; }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.5rem;
+      color: var(--dark); margin-bottom: 0.3rem;
+    }
+
+    .modal-sub {
+      font-size: 0.85rem; color: var(--muted);
+      margin-bottom: 1.8rem;
+    }
+
+    .winner-card {
+      background: linear-gradient(135deg, rgba(255,107,0,0.08), rgba(255,107,0,0.04));
+      border: 2px solid rgba(255,107,0,0.3);
+      border-radius: 16px;
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
+      animation: winnerReveal 0.5s ease both 0.2s;
+    }
+
+    @keyframes winnerReveal {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .winner-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.3rem;
+      color: var(--orange); margin-bottom: 0.35rem;
+    }
+
+    .winner-detail {
+      font-size: 0.83rem; color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .modal-actions { display: flex; gap: 0.7rem; justify-content: center; }
+
+    .btn-modal {
+      height: 40px; padding: 0 1.3rem;
+      border-radius: 10px; border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn-modal:hover { opacity: 0.8; }
+    .btn-modal-primary { background: var(--orange); color: white; }
+    .btn-modal-ghost   { background: #eee; color: var(--text); }
+
+    .draw-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #eee;
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 1.5rem auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     .page-wrap {
       max-width: 1400px;
       margin: 0 auto;
@@ -201,6 +295,38 @@
 </head>
 <body>
 
+<!-- DRAW MODAL -->
+<div class="modal-overlay" id="draw-modal" onclick="closeDraw(event)">
+  <div class="modal">
+    <div id="draw-loading" style="display:none">
+      <div class="modal-icon">🎁</div>
+      <div class="modal-title">Trekking bezig…</div>
+      <div class="draw-spinner"></div>
+    </div>
+    <div id="draw-result" style="display:none">
+      <div class="modal-icon">🏆</div>
+      <div class="modal-title">Winnaar!</div>
+      <div class="modal-sub">En de winnaar van de prijstrekking is…</div>
+      <div class="winner-card">
+        <div class="winner-name" id="winner-name"></div>
+        <div class="winner-detail" id="winner-detail"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal btn-modal-ghost" onclick="openDraw()">Opnieuw trekken</button>
+        <button class="btn-modal btn-modal-primary" onclick="closeDraw()">Sluiten</button>
+      </div>
+    </div>
+    <div id="draw-empty" style="display:none">
+      <div class="modal-icon">📋</div>
+      <div class="modal-title">Geen aanmeldingen</div>
+      <div class="modal-sub" style="margin-bottom:1.5rem">Er zijn nog geen aanmeldingen om uit te loten.</div>
+      <div class="modal-actions">
+        <button class="btn-modal btn-modal-primary" onclick="closeDraw()">Sluiten</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <header class="header">
 <div class="header-inner">
   <div class="header-left">
@@ -226,6 +352,12 @@
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
       Exporteer CSV
+    </button>
+    <button class="btn btn-prize" onclick="openDraw()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+      </svg>
+      Winnaar trekken
     </button>
     <button class="btn btn-red" onclick="logout()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -392,6 +524,39 @@
   async function logout() {
     await fetch('/api/logout', { method: 'POST' });
     window.location.href = '/login.html';
+  }
+
+  function openDraw() {
+    const modal = document.getElementById('draw-modal');
+    modal.classList.add('open');
+    document.getElementById('draw-loading').style.display = 'block';
+    document.getElementById('draw-result').style.display = 'none';
+    document.getElementById('draw-empty').style.display = 'none';
+
+    setTimeout(async () => {
+      try {
+        const res = await fetch('/api/draw', { method: 'POST' });
+        if (res.status === 400) {
+          document.getElementById('draw-loading').style.display = 'none';
+          document.getElementById('draw-empty').style.display = 'block';
+          return;
+        }
+        const { winner } = await res.json();
+        document.getElementById('winner-name').textContent = winner.naam;
+        document.getElementById('winner-detail').innerHTML =
+          `${x(winner.email)}<br>${x(winner.mobiel)}<br>${x(winner.opleiding)} – jaar ${x(winner.leerjaar)}`;
+        document.getElementById('draw-loading').style.display = 'none';
+        document.getElementById('draw-result').style.display = 'block';
+      } catch {
+        document.getElementById('draw-loading').style.display = 'none';
+        document.getElementById('draw-empty').style.display = 'block';
+      }
+    }, 1200);
+  }
+
+  function closeDraw(e) {
+    if (e && e.target !== document.getElementById('draw-modal')) return;
+    document.getElementById('draw-modal').classList.remove('open');
   }
 
   loadData();

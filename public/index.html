@@ -311,6 +311,61 @@
       animation: slideUp 0.65s ease forwards 1.05s;
     }
 
+    .prize-block {
+      width: calc(100% - 4rem);
+      background: white;
+      border-radius: 22px;
+      padding: 1.2rem 1.6rem;
+      display: flex; align-items: center; gap: 1.1rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 0 0 4px rgba(255,255,255,0.25);
+      opacity: 0;
+      animation: slideUp 0.65s ease forwards 1.2s;
+      position: relative; overflow: hidden;
+    }
+
+    .prize-block::after {
+      content: '';
+      position: absolute; top: 0; left: -100%;
+      width: 55%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,107,0,0.07), transparent);
+      animation: shimmer 3.5s ease infinite 2.5s;
+    }
+
+    @keyframes shimmer {
+      0%   { left: -100%; }
+      100% { left: 220%; }
+    }
+
+    .prize-emoji {
+      font-size: 2.8rem; flex-shrink: 0;
+      animation: bounce 3.5s ease infinite 3s;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    @keyframes bounce {
+      0%, 85%, 100% { transform: translateY(0) rotate(0deg); }
+      88%  { transform: translateY(-10px) rotate(-8deg); }
+      93%  { transform: translateY(-5px) rotate(5deg); }
+      97%  { transform: translateY(-2px) rotate(-2deg); }
+    }
+
+    .prize-label {
+      font-size: 0.66rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 0.2rem;
+    }
+
+    .prize-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.25rem;
+      color: #0D0D0D; line-height: 1.1;
+    }
+
+    .prize-sub {
+      font-size: 0.77rem; color: #888;
+      margin-top: 0.15rem;
+    }
+
     .counter-dot {
       width: 8px; height: 8px;
       border-radius: 50%; background: #86efac;
@@ -440,6 +495,15 @@
       <span class="counter-text">
         <span class="counter-num" id="counter-num">0</span> aanmeldingen
       </span>
+    </div>
+
+    <div class="prize-block">
+      <div class="prize-emoji">🎁</div>
+      <div>
+        <div class="prize-label">Exclusief voor studenten</div>
+        <div class="prize-title">Win een prijs!</div>
+        <div class="prize-sub">Scan de QR-code &amp; maak kans</div>
+      </div>
     </div>
   </div>
 
